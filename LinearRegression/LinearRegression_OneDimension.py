@@ -56,6 +56,7 @@ if __name__ == "__main__":
     X, Y = LoadOneDimesionData()
     DisplayData(X,Y,label="Original")
     a,b = computeWieghts(X,Y)
+    print(a,b)
     pY = predictY(X,a,b)
     DisplayData(X,pY,label= "Predicted",c="r")
     score(Y,pY)
