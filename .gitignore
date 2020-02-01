@@ -1,3 +1,8 @@
 
 *.pyc
 *.tmp
+*.LENOVO
+*.data-00000-of-00002
+*.index
+*.meta
+*.data-00001-of-00002
