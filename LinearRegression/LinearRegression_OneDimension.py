@@ -40,6 +40,43 @@ def computeWieghts(X,Y):
     b = ( Y.mean() * X.dot(X) - X.mean() * X.dot(Y) ) / denominator
     return a,b 
 
+
+def computeWeightsUsingGradientDeceint(X,Y):
+
+    N = len(X)
+    baisOneColumn = np.ones(N)
+   
+    #np.concatenate((X,baisOneColumn),axis=1)
+    #P = np.hstack([X,baisOneColumn]).reshape(-1)
+    X = np.c_[baisOneColumn,X]
+    N,D = X.shape
+
+    #Gradient descent
+    costs = []
+    w = np.random.randn(D) / np.sqrt(D) #  w0 and w1 (w0 is the bais)
+#    w = [10,4]  # actual solution.
+    learning_rate = 0.000001 # try multiple values: 0.1, 0.01, 0.001, 0.0001
+    for t in range(100):
+      # update w
+      Yhat = X.dot(w)  # forward function
+      delta = Yhat - Y # differce from the actual and predictions. i.e variance 
+      w = w - learning_rate*X.T.dot(delta)  # Update the new wieghts. 
+      # w <- w -alpha*d(J)/d(w)
+    
+      # Mean squared error i.e mean of error**2
+      mse = delta.dot(delta) / N
+      costs.append(mse)
+    
+        # plot the costs
+    plt.plot(costs)
+    plt.show()
+    
+    return w
+     
+
+
+
+
 def predictY(X,a,b):
     Yhat = a*X + b
     return Yhat
@@ -57,6 +94,20 @@ if __name__ == "__main__":
     DisplayData(X,Y,label="Original")
     a,b = computeWieghts(X,Y)
     print(a,b)
-    pY = predictY(X,a,b)
+    pY = predictY(X,a,b) # a and b can be part of class variable.
     DisplayData(X,pY,label= "Predicted",c="r")
     score(Y,pY)
+    
+    
+    w = computeWeightsUsingGradientDeceint(X,Y)
+    
+    N = len(X)
+    baisOneColumn = np.ones(N)
+    X_one = np.c_[baisOneColumn,X]
+    print("Final w",w)
+    pY = X_one.dot(w) 
+    #pY = predictY(X,w0,w1) # a and b can be part of class variable.
+    DisplayData(X,pY,label= "Gradient Decent",c="b")
+    score(Y,pY)
+    
+    
