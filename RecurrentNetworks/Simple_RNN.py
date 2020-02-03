@@ -8,6 +8,22 @@ Recurrent Networks
 
 ANN with time components (Implemented as loop back with shared weights)
 
+NOTE: Though the file name says that it is simple RNN. It is not RNN . It is simple ANN class
+with multiple hidden layers. 
+
+We have done mupltiple combinations for 4-bit sequence. It finally worked 
+with some combinations below:
+    learning_rate=1e-4,
+    print_period=8, 
+    epochs = 50000,
+    batch_sz = 8
+    period is 1000
+    
+    model = ANN([2**(4-1)])
+    
+Data set is XOR problem which cannot be resolved by simple Linear equations.
+    
+
 """
 
 import numpy as np
@@ -41,12 +57,36 @@ def all_parity_seq(bit):
         Y[i] = sum_of_ones % 2
     
     return X,Y # X containts the binary digit but the bit order from right to left instead of right to left
+
+def parity_seq(bit):
+    # Generate a table to generate a table with Ntotal binary numbers:
+    # however, we are making Ntotal which is a kind of multiple of 100.
+    # 
+    N = 2**bit # N is the number of possible binary sequences with 0s and 1s
+    #print(Ntotal)
+    X = np.zeros((N,bit)) # it contians the real binary values for a given a digit wiht bit 0s and 1s
+    Y = np.zeros(N) # Initialize X and Y with zeros first
+ 
+    for i in range(N):
+        a = i
+        for j in range(bit): # for every bit of the number.
+            if (a % 2**(j+1)) != 0:
+                X[i,j] = 1
+                a -= 2**(j)
+                #print (a)
+            
+        sum_of_ones = X[i].sum()
+        Y[i] = sum_of_ones % 2
+    
+    return X,Y # X containts the binary digit but the bit order from right to left instead of right to left
+
+
     
 def init_wieght(Mi,Mo):
     return np.random.randn(Mi,Mo)/np.sqrt(Mi+Mo)
 
 def test1():
-    X, Y = all_parity_seq(12)
+    X, Y = all_parity_seq(3)
     print(X)
     print(Y)
 
@@ -78,7 +118,7 @@ class ANN(object): # why do we need object
     def __init__(self,hidden_layer_sizes):
         self.hidden_layer_sizes = hidden_layer_sizes
     
-    def fit(self, X,Y, learning_rate = 1e-2, mu=0.99, reg=1e-12, epochs = 400, batch_sz = 20, print_period=1, show_fig=False):
+    def fit(self, X,Y, learning_rate = 1e-2, mu=0.99, reg=1e-12, epochs = 400, batch_sz = 8, print_period=1, show_fig=False):
         
                # X = X.astype(np.float32)
         Y = Y.astype(np.int32)
@@ -91,6 +131,8 @@ class ANN(object): # why do we need object
         Mi = D # contains the dimention info for input layer.
         
         layer_id = 0
+        print("hidden layer sizes:",self.hidden_layer_sizes)
+        
         for layer in self.hidden_layer_sizes :  # note that it is list of hidden layers with sizes
             h = HiddenLayer(Mi,layer, layer_id)
             self.hidden_layers.append(h)
@@ -137,6 +179,7 @@ class ANN(object): # why do we need object
 
         n_batches = N // batch_sz
         costs = []
+        error = []
         for i in range(epochs):
             X, Y = shuffle(X, Y)
             for j in range(n_batches):
@@ -145,13 +188,17 @@ class ANN(object): # why do we need object
 
                 c, p = train_op(Xbatch, Ybatch)
 
-                if j % print_period == 0:
+                if i % 1000 == 0:
+#                if j % print_period == 0:
                     costs.append(c)
                     e = np.mean(Ybatch != p)
+                    error.append(e)
                     print("i:", i, "j:", j, "nb:", n_batches, "cost:", c, "error rate:", e)
         
         if show_fig:
             plt.plot(costs)
+            plt.show()
+            plt.plot(error)
             plt.show()
 
     
@@ -171,13 +218,16 @@ class ANN(object): # why do we need object
 
 
 def wide():
-    X,Y = all_parity_seq(12)
-    model = ANN([2048])
-    model.fit(X,Y, learning_rate=1e-4,print_period=100, epochs = 300, show_fig=True)
+    X,Y = parity_seq(4)
+    #model = ANN([2048]) for 12
+    #model.fit(X,Y, learning_rate=1e-4,print_period=100, epochs = 300, show_fig=True)
+
+    model = ANN([2**(4-1)])
+    model.fit(X,Y, learning_rate=1e-4,print_period=8, epochs = 50000, show_fig=True)
 
 def deep():
 
-    X,Y = all_parity_seq(12)
+    X,Y = parity_seq(12)
     model = ANN([1024]*2)
     model.fit(X,Y, learning_rate=1e-3,print_period=100, epochs = 100, show_fig=True)
 
@@ -186,8 +236,22 @@ if __name__ == "__main__":
     print("Main function starts here")
     
     #wide()
-    deep()
+    #deep()
     
+    
+    X, Y = parity_seq(4)
+    print(X)
+    print(Y)
+#    model = ANN([2**(4-1)])
+    model = ANN([2**(4)])
+    model.fit(X,Y, learning_rate=1e-4,print_period=8, epochs = 50000, show_fig=True)
+
+
+    #wide()
+    # 2**(4-1) = 2**3 = 8
+#    model = ANN([8]*2)
+#    model.fit(X,Y, learning_rate=1e-4,print_period=1000, epochs = 40000, show_fig=True)
+   
 #    test1()
 #    test2()
     
