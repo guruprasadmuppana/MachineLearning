@@ -32,7 +32,7 @@ def clouds(show_fig=True):
     # Generate sample data points with three clusters.
     D = 2 # the samples are two -dimenational. For easy visualization. We can be make it even 1
     N = 2000 # total number of samples.
-    sep = 10 # separation between the means
+    sep = 5 # separation between the means
     
     mu1 = np.array([0,0])
     mu2 = np.array([sep,0])
@@ -129,21 +129,21 @@ class GMM:
 
 
 
-                
-            print("LL:",lls)
-            plt.plot(lls)
-            plt.title("Log-Likelihood")
-            plt.show()
-        
-            random_colors = np.random.random((self.K, 3))
-            colors = self.R.dot(random_colors)
-            plt.scatter(X[:,0], X[:,1], c=colors)
-            plt.show()
-        
-            print("pi:", self.pis)
-            print("means:", self.Means)
-            print("covariances:", self.co_vars)
-            return self.R
+            
+        #print("LL:",lls)
+        plt.plot(lls)
+        plt.title("Log-Likelihood")
+        plt.show()
+    
+        random_colors = np.random.random((self.K, 3))
+        colors = self.R.dot(random_colors)
+        plt.scatter(X[:,0], X[:,1], c=colors)
+        plt.show()
+    
+        print("pi:", self.pis)
+        print("means:", self.Means)
+        print("covariances:", self.co_vars)
+        return self.R
 
 
 
