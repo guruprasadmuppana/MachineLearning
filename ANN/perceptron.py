@@ -49,6 +49,10 @@ class Perceptron:
         
     def forward (self, X,W):
         # X is 4x3 matric; W is 3X1 matric (vector)
+        
+        # in classical perceptron, or MLP(Multi layer perceptrons), the activation 
+        # function is a step function.
+        
         return sigmod(np.dot(X,W))
         
     def fit(self,X,Y):
