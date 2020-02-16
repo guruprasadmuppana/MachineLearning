@@ -6,7 +6,8 @@ def GenerateOneDimesionData():
     N = 100
     with open('data_1d.csv', 'w') as f:
         X = np.random.uniform(low=0, high=100, size=N)
-        Y = 4*X + 10 + np.random.normal(scale=5, size=N)
+        # if you change the scale (standard deviation. error will increase)
+        Y = 4*X + 10 + np.random.normal(scale=0, size=N)
         for i in range(N):
             f.write("%s,%s\n" % (X[i], Y[i]))
     #    plt.scatter(X,Y,alpha=0.3, marker="^",cmap="green")
@@ -35,6 +36,10 @@ def DisplayData(X,Y,label="Line",c="green"):
     
 
 def computeWieghts(X,Y):
+    
+    # Find out slope i.e m.  m = Sigma((x - x.mean)*(y- y.mean))/sigma(x-x.mean)**2
+    # c = y.mean - m*x_means
+    # The following is the second approach.
     denominator = X.dot(X) - X.mean() * X.sum()
     a = ( X.dot(Y) - Y.mean()*X.sum() ) / denominator
     b = ( Y.mean() * X.dot(X) - X.mean() * X.dot(Y) ) / denominator
@@ -56,10 +61,19 @@ def computeWeightsUsingGradientDeceint(X,Y):
     w = np.random.randn(D) / np.sqrt(D) #  w0 and w1 (w0 is the bais)
 #    w = [10,4]  # actual solution.
     learning_rate = 0.000001 # try multiple values: 0.1, 0.01, 0.001, 0.0001
-    for t in range(100):
+    for t in range(1000000): # more interations, the accuracy will increase.
+        # 10 -> 0.9980096958518704
+        # 100 - >0.9984853282812394
+        # 100 -> 0.9983576150916451
+        # 10000 - >0.9992472475148759
+        # 100000 ->0.9999844571235404; w [9.10867294 4.01374064]
+        # 1000000 ->  1.0;  w = w [10.  4.]
+                
       # update w
       Yhat = X.dot(w)  # forward function
       delta = Yhat - Y # differce from the actual and predictions. i.e variance 
+      # Note there are two derivates: dy/dm and dy/dc. 
+      # X.T and delta. These derivates are already calcualted using math.
       w = w - learning_rate*X.T.dot(delta)  # Update the new wieghts. 
       # w <- w -alpha*d(J)/d(w)
     
@@ -92,7 +106,7 @@ if __name__ == "__main__":
     GenerateOneDimesionData()
     X, Y = LoadOneDimesionData()
     DisplayData(X,Y,label="Original")
-    a,b = computeWieghts(X,Y)
+    a,b = computeWieghts(X,Y)  # using formules of m and c
     print(a,b)
     pY = predictY(X,a,b) # a and b can be part of class variable.
     DisplayData(X,pY,label= "Predicted",c="r")
