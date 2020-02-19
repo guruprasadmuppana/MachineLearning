@@ -72,17 +72,20 @@ xtest_mlp = scalar_x.transform(xtest) # using the calculated mean and std, the d
 scalar_y = StandardScaler()
 # Note that y is a vactor. Using exanddim, we will make appropiate required dimensions
 # ravel flattens data array
-ytrain_mlp = scalar_y.fit_transform(np.expand_dims(ytrain,-1)).ravel()
-ytest_mlp = scalar_y.fit_transform(np.expand_dims(ytest,-1)).ravel()
+#ytrain_mlp = scalar_y.fit_transform(np.expand_dims(ytrain,-1)).ravel()
+#ytest_mlp = scalar_y.fit_transform(np.expand_dims(ytest,-1)).ravel()
+
+# If you do not scale Yes. The training needs more iterations for Convergence . 
+# I hvae increase iterations from 1000 to 3000.
 
 
-mlp_model = MLPRegressor(max_iter=1000)
+mlp_model = MLPRegressor(max_iter=3000)
 
-mlp_model.fit(xtrain_mlp,ytrain_mlp)
+mlp_model.fit(xtrain_mlp,ytrain)
 
 
-print("train score:",mlp_model.score(xtrain_mlp,ytrain_mlp))
-print("test score:",mlp_model.score(xtest_mlp,ytest_mlp))
+print("MLP train score:",mlp_model.score(xtrain_mlp,ytrain))
+print("MLP  test score:",mlp_model.score(xtest_mlp,ytest))
 
 
 
