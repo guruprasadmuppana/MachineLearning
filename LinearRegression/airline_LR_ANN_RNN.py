@@ -62,7 +62,7 @@ for T in ([50]):
     Y_seq = np.zeros(n)
     
     for t in range(len(X)-T):
-        # the new data set will be n*T
+        # the new data set will be nxT dimensions
         X_seq[t] = series[t:t+T]
         Y_seq[t] = series[t+T]
     
@@ -71,8 +71,8 @@ for T in ([50]):
     
     model = LinearRegression()
     model.fit(xtrain,ytrain)
-    print("Train score:",model.score(xtrain,ytrain))
-    print("Test score:",model.score(xtest,ytest))
+    print("LR Train score:",model.score(xtrain,ytrain))
+    print("LR Test score:",model.score(xtest,ytest))
     train_acc.append(model.score(xtrain,ytrain))
     test_acc.append(model.score(xtest,ytest))
     
@@ -86,10 +86,10 @@ for T in ([50]):
 #    plt.legend()
 #    plt.show()
 
-plt.plot(train_acc,label="train")
-plt.plot(test_acc,label="train")
-plt.legend()
-plt.show()
+#plt.plot(train_acc,label="train")
+#plt.plot(test_acc,label="train")
+#plt.legend()
+#plt.show()
 
 
 #print(X_seq[0])
@@ -133,7 +133,8 @@ class ANN(object):
     def __init__(self, hidden_layer_sizes):
         self.hidden_layer_sizes = hidden_layer_sizes
 
-    def fit(self, X, Y, activation=T.tanh, learning_rate=1e-3, mu=0.5, reg=0, epochs=5000, batch_sz=None, print_period=100, show_fig=True):
+    def fit(self, X, Y, activation=T.tanh, learning_rate=1e-3, mu=0.5, reg=0, epochs=100, batch_sz=None, print_period=100, show_fig=True):
+#    def fit(self, X, Y, activation=T.tanh, learning_rate=1e-3, mu=0.5, reg=0, epochs=5000, batch_sz=None, print_period=100, show_fig=True):
         X = X.astype(np.float32)
         Y = Y.astype(np.float32)
 
@@ -192,8 +193,8 @@ class ANN(object):
         )
 
         n_batches = np.int(N / batch_sz)
-        # print "N:", N, "batch_sz:", batch_sz
-        # print "n_batches:", n_batches
+#        print( "N:", N, "batch_sz:", batch_sz)
+#        print( "n_batches:", n_batches)
         costs = []
         for i in np.arange(epochs):
             X, Y = shuffle(X, Y)
@@ -250,7 +251,7 @@ for seq_size in ([20]):
     xtrain, xtest , ytrain, ytest = train_test_split(X_seq,Y_seq, test_size=0.3)
     #print(xtrain.shape, xtest.shape , ytrain.shape, ytest.shape)
     
-    model = ANN([100]) # 200 is the original value
+    model = ANN([25])  # 100 ; it will be good to have more than input size. i.e more than seq_size
     model.fit(xtrain, ytrain, activation=T.tanh)
     
     print("ANN Train score:",model.score(xtrain,ytrain))
@@ -396,8 +397,6 @@ class RNN(object):
         for i in np.arange(epochs):
             t0 = datetime.now()
             X, Y = shuffle(X, Y)
-            n_correct = 0
-            n_total = 0
             cost = 0
             for j in np.arange(N):
                 
@@ -462,8 +461,8 @@ for seq_size in ([20]):
     xtest = xtest.reshape(Ntest, seq_size, 1)
 
     
-    model = RNN([50])
-    model.fit(xtrain, ytrain, activation=T.tanh)
+    model = RNN([25])
+    model.fit(xtrain, ytrain, activation=T.tanh,show_fig=True)
 
     
     print("RNN Train score:",model.score(xtrain,ytrain))
@@ -480,13 +479,13 @@ for seq_size in ([20]):
     # add T seq of number nan values.
     plt.plot(series,label="original")
     plt.plot(np.concatenate([np.full(seq_size, np.nan), py]),label="Predicted value")
-    plt.title("Prediction using Linear Regression from ANN")
+    plt.title("Prediction using RNN")
     plt.legend()
     plt.show()
 
 plt.plot(train_acc,label="train")
 plt.plot(test_acc,label="train")
-plt.title("ANN")
+plt.title("RNN")
 
 plt.legend()
 plt.show()
