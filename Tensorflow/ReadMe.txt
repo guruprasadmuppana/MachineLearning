@@ -26,5 +26,13 @@
    In addition to fit_generation, one can do Fit_evaluation for checking the accuracy. In this case, we have used training data itself is used.
    However, one can use evaluation images for checking the final accuracy.
 
-9.
+9. ImageClassification_Keras
+   This is simple image classifications for cats and dogs. 
+   it uses pure Keras API. It will look like Tensorflow. 
+   Note that you need to have Keras in the evironment.
+   it has some environment ....
+   model.save_weights is the function to pick it from this file.
+   Also, not that data to be downloaded and set up in specific directory structure
+   so that ImageDataGenerators can be used.
+
 
