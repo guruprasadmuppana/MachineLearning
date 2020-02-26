@@ -70,6 +70,9 @@ plt.show()
 
 
 
+# Predicting the second of samples using RNN.
+# it works perfectly.
+
 validation_target = Y[-N//2:]
 validation_predictions = []
 
@@ -89,7 +92,14 @@ plt.plot(validation_predictions, label='forecast prediction')
 plt.legend()
 plt.show()
 
+# Instead of sending entire sequence of T input, 
+# we rotate the same samples with torationing predictions.
+# the processing is done T times with multiple comnbinations.
 
+# note that we pass T samples at a time. 
+# However, we need to predicted value for each sequence is added to the input sequence 
+# in the second iteration.
+# This is correct way to predict.
 
 validation_target = Y[-N//2:]
 validation_predictions = []
@@ -107,6 +117,11 @@ while len(validation_predictions) < len(validation_target):
   last_x = np.roll(last_x, -1)
   last_x[-1] = p
   
+# x = np.arange(10)
+# np.roll(x, 2)
+# >>array([8, 9, 0, 1, 2, 3, 4, 5, 6, 7])
+# np.roll(x, -2)
+# >>array([2, 3, 4, 5, 6, 7, 8, 9, 0, 1])
   
   
 plt.plot(validation_target, label='forecast target')
