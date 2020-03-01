@@ -73,6 +73,14 @@ plt.ylabel("w2*X^2 + w1*X + w0")
 plt.plot(sorted_original_x,y_original_without_noise, c=(0,1,0,0.5))
 plt.show()
 
+# determine how good the model is by computing the r-squared
+Yhat = X.dot(w)
+d1 = Y - Yhat
+d2 = Y - Y.mean()
+r2 = 1 - d1.dot(d1) / d2.dot(d2)
+print("the r-squared is:", r2)
+print("Accuracy depends upon noise in the original data")
+
 
 
 
