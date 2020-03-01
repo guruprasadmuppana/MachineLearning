@@ -137,6 +137,10 @@ class GMM:
     
         random_colors = np.random.random((self.K, 3))
         colors = self.R.dot(random_colors)
+#        color = np.array([[1,0,0],
+#                          [0,2,0],
+#                          [0,0,3]])
+#        colors = self.R.dot(color)
         plt.scatter(X[:,0], X[:,1], c=colors)
         plt.show()
     
